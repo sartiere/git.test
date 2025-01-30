@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trombinoscope</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(235, 231, 230, 0.98);
+            color: #333;
+        }
+        header {
+            background-color: rgba(6, 190, 175, 0.84);
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            color: white;
+            text-align: center;
+            font-size: 28px;
+        }
+        nav {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            background-color: rgba(75, 108, 143, 0.72);
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        nav a:hover {
+            background-color: rgba(167, 223, 228, 0.92);
+        }
+        footer {
+            background-color: rgba(6, 190, 175, 0.84);
+            padding: 10px;
+            color: white;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .trombinoscope-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .person-card {
+            background-color: rgba(130, 206, 160, 0.35);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(17, 81, 43, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+        .person-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(130, 206, 160, 0.35);
+        }
+        .person-card img {
+            width: 100%;
+            max-width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .person-card p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #444;
+        }
+        .person-card a {
+            text-decoration: none;
+            color: rgba(75, 108, 143, 0.72);
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .person-card a:hover {
+            color: rgba(172, 140, 208, 0.63);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header avec le titre et la navigation -->
+    <header>
+        <h1>Trombinoscope</h1>
+        <nav>
+            <a href="{% url 'formulaire' %}">Se connecter</a>
+            <a href="{% url 'formulaire' %}">Créer ou modifier mon profil</a>
+            <a href="{% url 'register' %}">Créer un compte</a>
+            <a href="{% url 'view_cvs' %}">Mes CVs</a>
+            <a href="{% url 'trombinoscope' %}">Accueil</a>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <div class="trombinoscope-container">
+        {% for item in data %}
+        <div class="person-card">
+            <!-- Photo de la personne -->
+            {% if item.personne.photo and item.personne.photo.url %}
+                <a href="{% if item.premier_cv %}{% url 'cv_detail' item.premier_cv.id %}{% else %}#{% endif %}">
+                    <img src="{{ item.personne.photo.url }}" alt="Photo de {{ item.personne.prenom }} {{ item.personne.nom }}">
+                </a>
+            {% else %}
+                <img src="https://via.placeholder.com/150" alt="Photo non disponible">
+                <p>Aucune photo</p>
+            {% endif %}
+
+            <!-- Nom de la personne -->
+            <p>{{ item.personne.prenom }} <br> {{ item.personne.nom }}</p>
+
+            <!-- Lien vers le CV -->
+            {% if item.premier_cv %}
+                <a href="{% url 'cv_detail' item.premier_cv.id %}">Voir le CV</a>
+            {% else %}
+                <p>Aucun CV disponible</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Mon Trombinoscope | Tous droits réservés</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes CVs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgba(167, 182, 104, 0.67);
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        .cv-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cv-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(12, 155, 187, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .cv-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cv-item strong {
+            color: #007BFF;
+        }
+
+        .cv-item a {
+            color: rgba(132, 34, 73, 0.9);
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .cv-item a:hover {
+            color: #007BFF;
+        }
+
+        .no-cv {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mes CVs</h1>
+
+        <!-- Afficher tous les CVs de l'utilisateur sur la page -->
+        {% if cvs %}
+            <ul class="cv-list">
+                {% for cv in cvs %}
+                <li class="cv-item">
+                    <strong>Nom :</strong> {{ cv.personne.prenom }} {{ cv.personne.nom }}<br>
+                    <strong>Date de naissance :</strong> {{ cv.personne.date_naissance|date:"d/m/Y" }}<br>
+                    <strong>Email :</strong> {{ cv.contact.email }}<br>
+                    <strong>Téléphone :</strong> {{ cv.contact.telephone|default:"Non renseigné" }}<br>
+                    <strong>Adresse :</strong> {{ cv.contact.adresse|default:"Non renseignée" }}<br>
+                    <strong>CV :</strong>
+                    <a href="{% url 'view_cv' cv.id %}">Voir le CV</a>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-cv">Aucun CV disponible.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

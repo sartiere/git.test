@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer/Modifier un CV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(167, 182, 104, 0.67);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            color: rgba(12, 155, 187, 0.9);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        select, input[type="text"], input[type="checkbox"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: rgba(12, 155, 187, 0.48);
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(132, 34, 73, 0.6);
+        }
+
+        button:active {
+            background-color: rgba(175, 204, 225, 0.6);
+        }
+
+        .accordion {
+            background-color: rgba(12, 155, 187, 0.2);
+            color: #444;
+            cursor: pointer;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: none;
+            text-align: left;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+
+        .accordion:hover {
+            background-color: rgba(12, 155, 187, 0.3);
+        }
+
+        .accordion:after {
+            content: '\002B';
+            float: right;
+        }
+
+        .accordion.active:after {
+            content: '\2212';
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 10px 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .accordion-content.show {
+            display: block;
+        }
+    </style>
+    <script>
+        // Fonction pour gérer les accordéons
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordions = document.querySelectorAll('.accordion');
+            accordions.forEach(accordion => {
+                accordion.addEventListener('click', () => {
+                    accordion.classList.toggle('active');
+                    const content = accordion.nextElementSibling;
+                    if (content.classList.contains('show')) {
+                        content.classList.remove('show');
+                    } else {
+                        content.classList.add('show');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Créer/Modifier un CV</h1>
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Section Personne -->
+            <button type="button" class="accordion">Profil Personnel</button>
+            <div class="accordion-content">
+                <label for="personne">Personne :</label>
+                <select name="personne" id="personne" required>
+                    {% for personne in personnes %}
+                        <option value="{{ personne.id }}" {% if form.personne.value == personne.id %}selected{% endif %}>
+                            {{ personne.prenom }} {{ personne.nom }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Section Contact -->
+            <button type="button" class="accordion">Informations de Contact</button>
+            <div class="accordion-content">
+                <label for="contact">Contact :</label>
+                <select name="contact" id="contact" required>
+                    {% for contact in contacts %}
+                        <option value="{{ contact.id }}" {% if form.contact.value == contact.id %}selected{% endif %}>
+                            {{ contact.email }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Section Expériences -->
+            <button type="button" class="accordion">Expériences</button>
+            <div class="accordion-content">
+                {% for experience in experiences %}
+                    <label>
+                        <input type="checkbox" name="experiences" value="{{ experience.id }}" {% if experience.id in form.experiences.value %}checked{% endif %}>
+                        {{ experience.titre }} chez {{ experience.entreprise }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <!-- Section Formations -->
+            <button type="button" class="accordion">Formations</button>
+            <div class="accordion-content">
+                <!-- Formations spécifiques à l'utilisateur -->
+                {% for formation in formations %}
+                    <label>
+                        <input type="checkbox" name="formations" value="{{ formation.id }}" {% if formation.id in form.formations.value %}checked{% endif %}>
+                        {{ formation.diplome }} à {{ formation.institution }}
+                    </label>
+                {% endfor %}
+                <!-- Formations partagées -->
+                <h4>Autres formations disponibles :</h4>
+                {% for formation in shared_formations %}
+                    <label>
+                        <input type="checkbox" name="formations" value="{{ formation.id }}" {% if formation.id in form.formations.value %}checked{% endif %}>
+                        {{ formation.diplome }} à {{ formation.institution }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <!-- Section Langues -->
+            <button type="button" class="accordion">Langues</button>
+            <div class="accordion-content">
+                <!-- Langues spécifiques à l'utilisateur -->
+                {% for langue in langues %}
+                    <label>
+                        <input type="checkbox" name="langues" value="{{ langue.id }}" {% if langue.id in form.langues.value %}checked{% endif %}>
+                        {{ langue.langue }} - {{ langue.niveau }}
+                    </label>
+                {% endfor %}
+                <!-- Langues partagées -->
+                <h4>Langues disponibles :</h4>
+                {% for langue in shared_langues %}
+                    <label>
+                        <input type="checkbox" name="langues" value="{{ langue.id }}" {% if langue.id in form.langues.value %}checked{% endif %}>
+                        {{ langue.langue }} - {{ langue.niveau }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <!-- Section Loisirs -->
+            <button type="button" class="accordion">Loisirs</button>
+            <div class="accordion-content">
+                {% for loisir in loisirs %}
+                    <label>
+                        <input type="checkbox" name="loisirs" value="{{ loisir.id }}" {% if loisir.id in form.loisirs.value %}checked{% endif %}>
+                        {{ loisir.nom }}
+                    </label>
+                {% endfor %}
+            </div>
+
+            <!-- Section Titre et Design -->
+            <button type="button" class="accordion">Titre et Design</button>
+            <div class="accordion-content">
+                <label for="id_title">Titre du CV :</label>
+                {{ form.title }}
+
+                <label for="id_design">Choisir un design :</label>
+                {{ form.design }}
+            </div>
+
+            <!-- Boutons -->
+            <button type="submit">Enregistrer</button>
+            <a href="{% url 'view_cvs' %}"><button type="button">Voir mes CVs</button></a>
+        </form>
+    </div>
+</body>
+</html>

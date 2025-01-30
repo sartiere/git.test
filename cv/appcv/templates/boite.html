@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer un CV</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'boite.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color:rgba(167, 182, 104, 0.67);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(221, 236, 7, 0.72);
+        }
+
+        .form-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color:rgba(12, 155, 187, 0.48);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color:rgba(132, 34, 73, 0.6);
+        }
+
+        .form-container button:active {
+            background-color:rgba(175, 204, 225, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Créer un CV</h1>
+
+    <!-- Conteneur pour le formulaire -->
+    <div class="form-container">
+        <form method="POST">
+            {% csrf_token %}
+
+            <button type="button" onclick="window.location.href='{% url 'create_personne' %}'">
+                Créer ou modifier mon profil
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_contact' %}'">
+                Créer ou modifier mes contacts
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_formation' %}'">
+                Ajouter une formation
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_competence' %}'">
+                Ajouter une compétence
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_experience' %}'">
+                Ajouter une expérience
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_loisir' %}'">
+                Ajouter un loisir
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_langue' %}'">
+                Ajouter une langue
+            </button>
+
+            <button type="button" onclick="window.location.href='{% url 'create_cv' %}'">
+                Ajouter un CV
+            </button>
+        </form>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
